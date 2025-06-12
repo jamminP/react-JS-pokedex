@@ -21,16 +21,20 @@ export const fetchPokeData = async (id) =>{
 
     const flavorEntry = speciesData.flavor_text_entries
     .filter((data) => data.language.name === 'ko')
-    .map(data => data.flavor_text);
+    .map(data => data.flavor_text.replace(/\n|\f/g, ' '));
 
-    console.log(flavorEntry);
+    const types = data.types.map(t => t.type.name);
+
+    console.log(types);
 
     return {
         id,
         name: data.name,
+        color: speciesData.color.name,
         koreaName: koreanNameEntry ? koreanNameEntry.name : data.name,
         imageFront: data.sprites.front_default,
-        imageBack: data.species.back_default,
-        description: flavorEntry
+        imageBack: data.sprites.back_default,
+        description: flavorEntry,
+        types,
     }
 }
