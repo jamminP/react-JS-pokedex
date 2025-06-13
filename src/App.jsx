@@ -2,6 +2,8 @@ import { Link, Route, Routes } from "react-router-dom";
 import Main from "./pages/Main";
 import Detail from "./pages/Detail";
 import Logo from "./assets/pokemonLogo.png";
+import Search from "./pages/Search";
+import { Favorite } from "./pages/Favorite";
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/detail/:id" element={<Detail />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/favorite" element={<Favorite />} />
       </Routes>
     </div>
   );

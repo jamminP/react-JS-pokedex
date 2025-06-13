@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchPokemonList } from "../RTK/pokemonSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import FavoriteButton from "../components/FavoriteButton";
+import { Link } from "react-router-dom";
 
 const typeKoMap = {
   normal: "노말",
@@ -25,91 +23,20 @@ const typeKoMap = {
   fairy: "페어리",
 };
 
-function Main() {
-  const dispatch = useDispatch();
-  const { list, loading, error } = useSelector((state) => state.pokemon);
-  const navigate = useNavigate();
-  const [keyword, setKeyword] = useState("");
+export const Favorite = () => {
+  const favoriteIds = useSelector((state) => state.pokemon.favoriteIds);
+  const { list } = useSelector((state) => state.pokemon);
 
-  const handleSearch = (e) => {
-    setKeyword(e.target.value);
-  };
+  const favoritePokemons = list.filter((poke) => favoriteIds.includes(poke.id));
 
-  const handlekeyDown = (e) => {
-    if (e.key === "Enter") {
-      const trimmed = keyword.trim();
-      if (trimmed !== "") {
-        navigate(`/search?keyword=${encodeURIComponent(trimmed)}`);
-      }
-    }
-  };
-
-  useEffect(() => {
-    dispatch(fetchPokemonList());
-  }, [dispatch]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (favoritePokemons.length === 0) {
+    return <div className="p-10">찜한 포켓몬이 없습니다.</div>;
+  }
 
   return (
-    <div className="p-10 m-0">
-      <div className="flex items-center justify-center w-full h-12 mb-6">
-        <div className="relative w-full max-w-md">
-          <input
-            type="text"
-            placeholder="포켓몬 이름을 입력해보세요."
-            onChange={handleSearch}
-            onKeyDown={handlekeyDown}
-            className="
-        w-full
-        pl-10
-        pr-4 py-2
-        border border-gray-300 rounded-full
-        shadow-sm
-        focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent
-        transition
-        placeholder-gray-400
-        text-gray-800
-      "
-          />
-          <svg
-            className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-4.35-4.35M16 11a5 5 0 11-10 0 5 5 0 0110 0z"
-            ></path>
-          </svg>
-        </div>
-        <button
-          type="button"
-          onClick={() => navigate("/favorite")}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-red-500"
-          aria-label="찜 목록 보기"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            stroke="none"
-          >
-            <path
-              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 
-        7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 
-        19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-            />
-          </svg>
-        </button>
-      </div>
+    <div className="p-20">
       <section className="flex flex-wrap gap-6 justify-center">
-        {list.map((poke) => (
+        {favoritePokemons.map((poke) => (
           <li
             key={poke.id}
             className="list-none border rounded-lg shadow-md p-5 w-60 flex flex-col items-center bg-white
@@ -183,6 +110,4 @@ function Main() {
       </section>
     </div>
   );
-}
-
-export default Main;
+};
