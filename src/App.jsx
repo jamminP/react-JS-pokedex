@@ -1,9 +1,11 @@
 import { Link, Route, Routes } from "react-router-dom";
-import Main from "./pages/Main";
-import Detail from "./pages/Detail";
 import Logo from "./assets/pokemonLogo.png";
-import Search from "./pages/Search";
-import { Favorite } from "./pages/Favorite";
+import { lazy, Suspense } from "react";
+
+const Main = lazy(() => import("./pages/Main"));
+const Detail = lazy(() => import("./pages/Detail"));
+const Favorite = lazy(() => import("./pages/Favorite"));
+const Search = lazy(() => import("./pages/Search"));
 
 function App() {
   return (
@@ -13,12 +15,14 @@ function App() {
           <img className="w-40 auto" src={Logo}></img>
         </Link>
       </nav>
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/detail/:id" element={<Detail />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/favorite" element={<Favorite />} />
-      </Routes>
+      <Suspense fallback={<div>Loding...</div>}>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/detail/:id" element={<Detail />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/favorite" element={<Favorite />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }
